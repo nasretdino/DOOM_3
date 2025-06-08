@@ -53,12 +53,12 @@ class Player:
 
         self.check_wall_collision(x, y)
 
-        if keys[pg.K_LEFT]:
-            self.angle -= self.delta_time * PLAYER_ROT_SPEED / DELTA_ANGLE
-        if keys[pg.K_RIGHT]:
-            self.angle += self.delta_time * PLAYER_ROT_SPEED / DELTA_ANGLE
-
-        self.angle = self.in_360(self.angle)
+        # if keys[pg.K_LEFT]:
+        #     self.angle -= self.delta_time * PLAYER_ROT_SPEED / DELTA_ANGLE
+        # if keys[pg.K_RIGHT]:
+        #     self.angle += self.delta_time * PLAYER_ROT_SPEED / DELTA_ANGLE
+        #
+        # self.angle = self.in_360(self.angle)
 
 
     @staticmethod
@@ -79,10 +79,19 @@ class Player:
     def draw(self):
         pg.draw.circle(self.screen, 'green', (self.x * CELL_PIXELS, self.y * CELL_PIXELS), 15)
 
+    def mouse_control(self):
+        mx, my = pg.mouse.get_pos()
+        if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
+            pg.mouse.set_pos([WIDTH // 2, HEIGHT // 2])
+        self.rel = pg.mouse.get_rel()[0]
+        self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
+        self.angle += self.rel * self.delta_time // (1 // MOUSE_SENSITIVITY)
+        self.angle = self.in_360(self.angle)
 
     def update(self, delta_time):
         self.delta_time = delta_time
         self.movement()
+        self.mouse_control()
 
     @property
     def pos(self):

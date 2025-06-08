@@ -12,13 +12,20 @@ PLAYER_SPEED = 0.004
 PLAYER_SIZE_SCALE = 60
 
 
+MOUSE_SENSITIVITY = 0.25
+MOUSE_MAX_REL = 40
+MOUSE_BORDER_LEFT = int(WIDTH * 0.0625)
+MOUSE_BORDER_RIGHT = WIDTH - MOUSE_BORDER_LEFT
+
+
+
 FOV = 60  # должно быть четным
 HALF_FOV = FOV / 2
 NUM_RAYS_FOV = WIDTH
 DELTA_ANGLE = FOV / NUM_RAYS_FOV
 MAX_DEPTH = 20 # зависит от ширины экрана и размера клетки
 
-PLAYER_ROT_SPEED = DELTA_ANGLE * 2 # может быть только больше или равен DELTA_ANGLE
+# PLAYER_ROT_SPEED = DELTA_ANGLE * 2 # может быть только больше или равен DELTA_ANGLE
 SCALE = NUM_RAYS_FOV // WIDTH
 
 

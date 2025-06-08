@@ -12,6 +12,7 @@ class Game:
         os.environ["SDL_WINDOWS_DPI_AWARENESS"] = "permonitorv2"
         os.environ["SDL_WINDOWS_DPI_SCALING"] = "0"
         pg.init()
+        pg.mouse.set_visible(False)
         self.screen = pg.display.set_mode(RES)
         self.clock = pg.time.Clock()
         self.delta_time = 1
