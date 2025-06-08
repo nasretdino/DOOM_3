@@ -6,6 +6,8 @@ from settings import *
 from map import *
 from player import *
 from raycasting import *
+from object_render import *
+
 
 class Game:
     def __init__(self):
@@ -21,7 +23,8 @@ class Game:
     def new_game(self):
         self.map = Map(self.screen)
         self.player = Player(self.screen, self.map.world_map, self.delta_time)
-        self.raycasting = RayCasting(self.screen, self.map.world_map, self.player)
+        self.object_render = ObjectRender(self.screen)
+        self.raycasting = RayCasting(self.screen, self.map.world_map, self.player, self.object_render.wall_textures)
 
     def update(self):
         self.player.update(self.delta_time)
@@ -32,6 +35,7 @@ class Game:
 
     def draw(self):
         self.screen.fill("black")
+        self.object_render.draw(self.raycasting.get_objects_to_render())
         # self.map.draw()
         # self.player.draw()
 

@@ -1,6 +1,8 @@
 import math
 
 RES = WIDTH, HEIGHT = 1600, 900
+HALF_WIDTH = WIDTH // 2
+HALF_HEIGHT = HEIGHT // 2
 FPS = 120
 
 CELL_PIXELS = 100
@@ -21,14 +23,15 @@ MOUSE_BORDER_RIGHT = WIDTH - MOUSE_BORDER_LEFT
 
 FOV = 60  # должно быть четным
 HALF_FOV = FOV / 2
-NUM_RAYS_FOV = WIDTH
+NUM_RAYS_FOV = WIDTH # NUM_ANGLES_360 должно быть не дробным
 DELTA_ANGLE = FOV / NUM_RAYS_FOV
+NUM_ANGLES_360 = 360 * NUM_RAYS_FOV / FOV
 MAX_DEPTH = 20 # зависит от ширины экрана и размера клетки
 
 # PLAYER_ROT_SPEED = DELTA_ANGLE * 2 # может быть только больше или равен DELTA_ANGLE
-SCALE = NUM_RAYS_FOV // WIDTH
+SCALE = WIDTH // NUM_RAYS_FOV
+SCREEN_DIST = HALF_WIDTH / math.tan(math.radians(HALF_FOV))
 
 
-SCREEN_DIST = (WIDTH / 2) / math.tan(math.radians(HALF_FOV))
-
-
+TEXTURE_SIZE = 256
+HALF_TEXTURE_SIZE = TEXTURE_SIZE // 2

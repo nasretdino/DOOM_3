@@ -17,14 +17,14 @@ class Player:
     def get_table_sin(self):
         self.table_sin = {}
         angle = 0
-        for i in range(0, int(360 / DELTA_ANGLE)):
+        for i in range(0, int(NUM_ANGLES_360)):
             self.table_sin[i] = math.sin(math.radians(angle))
             angle = DELTA_ANGLE * i
 
     def get_table_cos(self):
         self.table_cos = {}
         angle = 0
-        for i in range(0, int(360 / DELTA_ANGLE)):
+        for i in range(0, int(NUM_ANGLES_360)):
             self.table_cos[i] = math.cos(math.radians(angle))
             angle = DELTA_ANGLE * i
 
@@ -63,8 +63,8 @@ class Player:
 
     @staticmethod
     def in_360(angle):
-        if round(angle * DELTA_ANGLE, 5) >= 360: angle -= 360 / DELTA_ANGLE
-        elif round(angle * DELTA_ANGLE, 5) < 0: angle += 360 / DELTA_ANGLE
+        if round(angle * DELTA_ANGLE, 5) >= 360: angle -= NUM_ANGLES_360
+        elif round(angle * DELTA_ANGLE, 5) < 0: angle += NUM_ANGLES_360
         return angle
 
 
@@ -82,10 +82,10 @@ class Player:
     def mouse_control(self):
         mx, my = pg.mouse.get_pos()
         if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
-            pg.mouse.set_pos([WIDTH // 2, HEIGHT // 2])
+            pg.mouse.set_pos([HALF_WIDTH, HALF_HEIGHT])
         self.rel = pg.mouse.get_rel()[0]
         self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
-        self.angle += self.rel * self.delta_time // (1 // MOUSE_SENSITIVITY)
+        self.angle += self.rel * self.delta_time // (1 / MOUSE_SENSITIVITY)
         self.angle = self.in_360(self.angle)
 
     def update(self, delta_time):
