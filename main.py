@@ -8,6 +8,8 @@ from player import *
 from raycasting import *
 from object_render import *
 from weapon import *
+from network import*
+
 
 class Game:
     def __init__(self):
@@ -27,8 +29,11 @@ class Game:
         self.raycasting = RayCasting(self.screen, self.map.world_map, self.player, self.object_render.wall_textures)
         self.weapon = Weapon(self.screen, self.object_render.weapon_textures, self.player)
 
+        self.network = Network(self.player,"0.0.0.0" ,"SERVER")
+
     def update(self):
         self.player.update(self.delta_time)
+        self.network.update()
         self.raycasting.update()
         self.player.shoot = self.weapon.update()
         pg.display.flip()
@@ -39,6 +44,7 @@ class Game:
         self.screen.fill("black")
         self.object_render.draw(self.raycasting.get_objects_to_render())
         self.weapon.draw()
+        pg.draw.circle(self.screen, "white", (HALF_WIDTH, HALF_HEIGHT), 2)
 
 
     def check_events(self):

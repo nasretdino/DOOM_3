@@ -1,6 +1,5 @@
 import pygame as pg
 
-from object_render import ObjectRender
 from settings import *
 import math
 
@@ -12,7 +11,6 @@ class RayCasting:
         self.player = player
         self.objects_to_render = []
         self.textures = wall_textures
-
 
     def get_objects_to_render(self):
         self.objects_to_render = []
@@ -86,29 +84,34 @@ class RayCasting:
                 depth_vert += delta_depth
 
             if depth_vert < depth_hor:
+                x_wall, y_wall = x_vert, y_vert  # Координаты точки попадания луча в стену
                 depth = depth_vert
                 texture = texture_vert
                 y_vert %= 1
                 offset = y_vert if cos_a > 0 else (1 - y_vert)
             else:
+                x_wall, y_wall = x_hor, y_hor  # Координаты точки попадания луча в стену
                 depth = depth_hor
                 texture = texture_hor
                 x_hor %= 1
                 offset = (1 - x_hor) if sin_a > 0 else x_hor
 
-
             # delete fish
             depth *= self.player.table_cos[self.player.in_360(self.player.angle - ray_angle)]
 
+
+            x_p2 = self.player.x2
+            y_p2 = self.player.y2
+            if (sin_a / cos_a) - (y_p2 - y_wall) / (x_p2 - x_wall) < 0.0001:
+                depth_player = math.sqrt((px - x_p2) ** 2 + (py - y_p2) ** 2)
+                depth_player *= self.player.table_cos[self.player.in_360(self.player.angle - ray_angle)]
+                if depth_player < depth:
+                    proj_height_player = SCREEN_DIST / (depth_player + 0.00001)
+                    pg.draw.rect(self.screen, 'red',
+                                 (ray * SCALE, (HEIGHT - proj_height_player) // 2, SCALE, proj_height_player))
+
             proj_height = SCREEN_DIST / (depth + 0.00001)
-
             self.ray_casting_result.append((depth, proj_height, texture, offset))
-
-            # pg.draw.rect(self.screen, 'white',
-            #              (ray * SCALE, (HEIGHT - proj_height) // 2, SCALE, proj_height))
-
-            # pg.draw.line(self.screen, 'yellow', (CELL_PIXELS * px, CELL_PIXELS * py),
-            #              (CELL_PIXELS * px + CELL_PIXELS * depth * cos_a, CELL_PIXELS * py + CELL_PIXELS * depth * sin_a), 2)
 
             ray_angle += 1
             ray_angle = self.player.in_360(ray_angle)

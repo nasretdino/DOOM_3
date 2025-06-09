@@ -14,6 +14,8 @@ class Player:
         self.get_table_cos()
         self.shoot = False
 
+        self.x2, self.y2 = PLAYER_POS # Координаты второго игрока
+
 
     def single_fire_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -83,9 +85,6 @@ class Player:
         if self.check_wall(int(self.x + x * scale), int(self.y)): self.x += x
         if self.check_wall(int(self.x), int(self.y + y * scale)): self.y += y
 
-    def draw(self):
-        pg.draw.circle(self.screen, 'green', (self.x * CELL_PIXELS, self.y * CELL_PIXELS), 15)
-
     def mouse_control(self):
         mx, my = pg.mouse.get_pos()
         if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
@@ -103,6 +102,9 @@ class Player:
     @property
     def pos(self):
         return self.x, self.y
+
+    def set_coords_to_2(self, coords):
+        self.x2, self.y2 = coords
 
     @property
     def map_pos(self):
