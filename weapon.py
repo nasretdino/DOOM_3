@@ -10,6 +10,7 @@ class Weapon:
         self.screen = screen
         self.animate_images = deque(images)
         self.start_image = images[0]
+        self.shoot_image = images[1]
         self.image_to_animate = self.start_image
         self.player = player
         self.animation_time = 120
@@ -30,14 +31,15 @@ class Weapon:
             self.animation_trigger = True
 
     def update(self):
-        if self.player.shoot:
+        if self.player.reloading:
             self.check_animation_time()
             self.image_to_animate = self.animate(self.animate_images)
-            if self.image_to_animate == self.start_image: return False
+            if self.player.shot and self.image_to_animate == self.shoot_image: return True, False
+            if self.image_to_animate == self.start_image: return False, False
         else:
             self.image_to_animate = self.start_image
-            return False
-        return True
+            return False, False
+        return True, self.player.shot
 
     def draw(self):
         im = self.image_to_animate

@@ -35,7 +35,9 @@ class Game:
         self.player.update(self.delta_time)
         self.network.update()
         self.raycasting.update()
-        self.player.shoot = self.weapon.update()
+        self.weapon.draw()
+        pg.draw.circle(self.screen, "red" if self.player.shot else "white", (HALF_WIDTH, HALF_HEIGHT), 2)
+        self.player.reloading, self.player.shot = self.weapon.update()
         pg.display.flip()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"{int(self.clock.get_fps())}")
@@ -43,9 +45,6 @@ class Game:
     def draw(self):
         self.screen.fill("black")
         self.object_render.draw(self.raycasting.get_objects_to_render())
-        self.weapon.draw()
-        pg.draw.circle(self.screen, "white", (HALF_WIDTH, HALF_HEIGHT), 2)
-
 
     def check_events(self):
         for event in pg.event.get():

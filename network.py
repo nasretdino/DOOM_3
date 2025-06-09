@@ -10,6 +10,7 @@ class Network:
         self.PORT = PORT
         self.new_connection()
 
+
     def new_connection(self):
         if self.type == "SERVER":
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,14 +22,22 @@ class Network:
                 print(f"Соединение установлено с {addr}")
                 break
         elif self.type == "CLIENT":
-            self.clent_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.clent_s.connect((self.HOST, self.PORT))
+            self.client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.client_s.connect((self.HOST, self.PORT))
             print("Соединение установлено")
         else:
             raise Exception("Invalid user type")
 
+    def shot_mechanics(self):
+        if self.player.shot:
+            if abs(self.player.y - self.player.y2 - (self.player.table_sin[self.player.angle] / self.player.table_cos[self.player.angle]) * (
+                    self.player.x - self.player.x2)) < 1e-6:
+                return False
+        return True
+
     def update(self):
-        self.client_s.sendall(pickle.dumps(self.player.pos))
+        self.client_s.sendall(pickle.dumps((self.player.pos, self.shot_mechanics())))
         data = pickle.loads(self.client_s.recv(512))
         if data:
-            self.player.set_coords_to_2(data)
+            self.player.set_coords_to_2(data[0])
+            self.player.life = data[1]

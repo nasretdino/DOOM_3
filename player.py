@@ -9,18 +9,22 @@ class Player:
         self.screen = screen
         self.world_map = world_map
         self.x, self.y = PLAYER_POS
-        self.angle = 1 # коэффициент, на который домножается DELTA_ANGLE
+        self.angle = 1  # коэффициент, на который домножается DELTA_ANGLE
         self.get_table_sin()
         self.get_table_cos()
-        self.shoot = False
+        self.reloading = False
+        self.shot = False
 
-        self.x2, self.y2 = PLAYER_POS # Координаты второго игрока
+        self.life = True
 
+        self.x2, self.y2 = PLAYER_POS  # Координаты второго игрока
 
     def single_fire_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
-            if event.button == 1 and not self.shoot:
-                self.shoot = True
+            if event.button == 1 and not self.reloading:
+                self.shot = True
+                self.reloading = True
+
 
 
     def get_table_sin(self):
@@ -36,7 +40,6 @@ class Player:
         for i in range(0, int(NUM_ANGLES_360)):
             self.table_cos[i] = math.cos(math.radians(angle))
             angle = DELTA_ANGLE * i
-
 
     def movement(self):
         sin_a = self.table_sin[self.angle]
@@ -69,13 +72,13 @@ class Player:
         #
         # self.angle = self.in_360(self.angle)
 
-
     @staticmethod
     def in_360(angle):
-        if round(angle * DELTA_ANGLE, 5) >= 360: angle -= NUM_ANGLES_360
-        elif round(angle * DELTA_ANGLE, 5) < 0: angle += NUM_ANGLES_360
+        if round(angle * DELTA_ANGLE, 5) >= 360:
+            angle -= NUM_ANGLES_360
+        elif round(angle * DELTA_ANGLE, 5) < 0:
+            angle += NUM_ANGLES_360
         return angle
-
 
     def check_wall(self, x, y):
         return (x, y) not in self.world_map

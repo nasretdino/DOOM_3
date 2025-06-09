@@ -102,10 +102,12 @@ class RayCasting:
 
             x_p2 = self.player.x2
             y_p2 = self.player.y2
-            if (sin_a / cos_a) - (y_p2 - y_wall) / (x_p2 - x_wall) < 0.0001:
+            tan_a = (sin_a / cos_a)
+
+            if abs(y_p2 - py - tan_a*(x_p2 - px)) < 0.2: # влияет на размер второго игрока
                 depth_player = math.sqrt((px - x_p2) ** 2 + (py - y_p2) ** 2)
                 depth_player *= self.player.table_cos[self.player.in_360(self.player.angle - ray_angle)]
-                if depth_player < depth:
+                if depth_player - depth < 0.000001:
                     proj_height_player = SCREEN_DIST / (depth_player + 0.00001)
                     pg.draw.rect(self.screen, 'red',
                                  (ray * SCALE, (HEIGHT - proj_height_player) // 2, SCALE, proj_height_player))
@@ -119,3 +121,4 @@ class RayCasting:
     def update(self):
         self.ray_cast()
         self.get_objects_to_render()
+
