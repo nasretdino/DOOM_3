@@ -41,4 +41,4 @@ class Weapon:
 
     def draw(self):
         im = self.image_to_animate
-        self.screen.blit(im, (HALF_WIDTH - im.get_width() // 2, HEIGHT - im.get_height() // 2))
+        self.screen.blit(im, (HALF_WIDTH - im.get_width() // 3 + 28, HEIGHT - im.get_height()))

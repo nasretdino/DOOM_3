@@ -39,6 +39,7 @@ class Game:
         self.screen.fill("black")
         self.object_render.draw(self.raycasting.get_objects_to_render())
         self.weapon.draw()
+        pg.draw.circle(self.screen, "white", (HALF_WIDTH, HALF_HEIGHT), 2)
 
 
     def check_events(self):
