@@ -12,6 +12,13 @@ class Player:
         self.angle = 1 # коэффициент, на который домножается DELTA_ANGLE
         self.get_table_sin()
         self.get_table_cos()
+        self.shoot = False
+
+
+    def single_fire_event(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if event.button == 1 and not self.shoot:
+                self.shoot = True
 
 
     def get_table_sin(self):

@@ -7,7 +7,7 @@ from map import *
 from player import *
 from raycasting import *
 from object_render import *
-
+from weapon import *
 
 class Game:
     def __init__(self):
@@ -25,10 +25,12 @@ class Game:
         self.player = Player(self.screen, self.map.world_map, self.delta_time)
         self.object_render = ObjectRender(self.screen)
         self.raycasting = RayCasting(self.screen, self.map.world_map, self.player, self.object_render.wall_textures)
+        self.weapon = Weapon(self.screen, self.object_render.weapon_textures, self.player)
 
     def update(self):
         self.player.update(self.delta_time)
         self.raycasting.update()
+        self.player.shoot = self.weapon.update()
         pg.display.flip()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"{int(self.clock.get_fps())}")
@@ -36,14 +38,15 @@ class Game:
     def draw(self):
         self.screen.fill("black")
         self.object_render.draw(self.raycasting.get_objects_to_render())
-        # self.map.draw()
-        # self.player.draw()
+        self.weapon.draw()
+
 
     def check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 pg.quit()
                 exit()
+            self.player.single_fire_event(event)
 
     def run(self):
         while True:
