@@ -19,12 +19,14 @@ class Map:
     def __init__(self, screen):
         self.screen = screen
         self.world_map = {}
+        self.world_map_not_wall = []
         self.get_map()
 
     def get_map(self):
         for j, row in enumerate(mini_map):
             for i, value in enumerate(row):
                 if value: self.world_map[(i, j)] = value
+                else: self.world_map_not_wall.append((i, j))
 
     def draw(self):
         for pos in self.world_map:

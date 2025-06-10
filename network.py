@@ -11,6 +11,7 @@ class Network:
         self.new_connection()
 
 
+
     def new_connection(self):
         if self.type == "SERVER":
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,15 +30,33 @@ class Network:
             raise Exception("Invalid user type")
 
     def shot_mechanics(self):
-        if self.player.shot:
-            if abs(self.player.y - self.player.y2 - (self.player.table_sin[self.player.angle] / self.player.table_cos[self.player.angle]) * (
-                    self.player.x - self.player.x2)) < 1e-6:
-                return False
+        if not self.player.shot:
+            return True
+
+        x1, y1 = self.player.pos
+        x2, y2 = self.player.x2, self.player.y2
+        dx, dy = x2 - x1, y2 - y1
+
+        angle = self.player.angle
+        cos_a = self.player.table_cos[angle]
+        sin_a = self.player.table_sin[angle]
+
+
+        player_depth = dx * cos_a + dy * sin_a # проекция
+        if player_depth <= 0:
+            return True  # Цель сзади => попадания нет
+
+        distance_from_center = abs(dx * sin_a - dy * cos_a) # растояние от центра противника до линии выстрела
+
+        player_radius = 0.3
+        if distance_from_center < player_radius:
+            return False
         return True
 
     def update(self):
-        self.client_s.sendall(pickle.dumps((self.player.pos, self.shot_mechanics())))
+        self.client_s.sendall(pickle.dumps((self.player.pos, self.shot_mechanics(), self.player.life)))
         data = pickle.loads(self.client_s.recv(512))
         if data:
             self.player.set_coords_to_2(data[0])
-            self.player.life = data[1]
+            if self.player.life: self.player.life = data[1]
+            self.player.life2 = data[2]

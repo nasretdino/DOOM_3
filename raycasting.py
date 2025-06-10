@@ -58,6 +58,7 @@ class RayCasting:
 
             for i in range(MAX_DEPTH):
                 tile_hor = (int(x_hor), int(y_hor))
+                texture_hor = self.map[0, 0]
                 if tile_hor in self.map:
                     texture_hor = self.map[tile_hor]
                     break
@@ -76,6 +77,7 @@ class RayCasting:
 
             for i in range(MAX_DEPTH):
                 tile_vert = int(x_vert), int(y_vert)
+                texture_vert = self.map[0, 0]
                 if tile_vert in self.map:
                     texture_vert = self.map[tile_vert]
                     break
@@ -99,20 +101,20 @@ class RayCasting:
             # delete fish
             depth *= self.player.table_cos[self.player.in_360(self.player.angle - ray_angle)]
 
+            x_p2, y_p2 = self.player.x2, self.player.y2
+            dx, dy = x_p2 - px, y_p2 - py
 
-            x_p2 = self.player.x2
-            y_p2 = self.player.y2
-            tan_a = (sin_a / cos_a)
+            player_depth = dx * self.player.table_cos[self.player.angle] + dy * self.player.table_sin[self.player.angle] # проекция
+            if player_depth > 0.5:
+                distance_to_ray = abs(dx * sin_a - dy * cos_a)
+                player_radius = 0.3  # Ширина модели игрока
+                if distance_to_ray < player_radius:
+                    if player_depth < depth:
+                        proj_height_player = SCREEN_DIST / (player_depth + 1e-6)
+                        pg.draw.rect(self.screen, 'white' if self.player.life2 else "red",
+                                     (ray * SCALE, (HEIGHT - proj_height_player) // 2, SCALE, proj_height_player))
 
-            if abs(y_p2 - py - tan_a*(x_p2 - px)) < 0.2: # влияет на размер второго игрока
-                depth_player = math.sqrt((px - x_p2) ** 2 + (py - y_p2) ** 2)
-                depth_player *= self.player.table_cos[self.player.in_360(self.player.angle - ray_angle)]
-                if depth_player - depth < 0.000001:
-                    proj_height_player = SCREEN_DIST / (depth_player + 0.00001)
-                    pg.draw.rect(self.screen, 'red',
-                                 (ray * SCALE, (HEIGHT - proj_height_player) // 2, SCALE, proj_height_player))
-
-            proj_height = SCREEN_DIST / (depth + 0.00001)
+            proj_height = SCREEN_DIST / (depth + 1e-6)
             self.ray_casting_result.append((depth, proj_height, texture, offset))
 
             ray_angle += 1
@@ -121,4 +123,3 @@ class RayCasting:
     def update(self):
         self.ray_cast()
         self.get_objects_to_render()
-

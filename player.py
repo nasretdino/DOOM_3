@@ -16,6 +16,8 @@ class Player:
         self.shot = False
 
         self.life = True
+        self.life2 = True
+
 
         self.x2, self.y2 = PLAYER_POS  # Координаты второго игрока
 
@@ -74,10 +76,11 @@ class Player:
 
     @staticmethod
     def in_360(angle):
-        if round(angle * DELTA_ANGLE, 5) >= 360:
-            angle -= NUM_ANGLES_360
-        elif round(angle * DELTA_ANGLE, 5) < 0:
-            angle += NUM_ANGLES_360
+        while angle >= NUM_ANGLES_360 or angle < 0:
+            if angle >= 360:
+                angle -= NUM_ANGLES_360
+            elif angle < 0:
+                angle += NUM_ANGLES_360
         return angle
 
     def check_wall(self, x, y):
